@@ -1,0 +1,123 @@
+<!-- 1. Table of Contents Widget -->
+<div id="floating-toc">
+  <button id="toc-toggle">Contents ▼</button>
+  <div id="toc-content">
+    <!-- TOC links will be generated here -->
+  </div>
+</div>
+
+<script>
+// Table of Contents Generator
+document.addEventListener('DOMContentLoaded', function() {
+  // Find all headings in the main content area (adjust the selector as needed)
+  const headings = document.querySelectorAll('.Main-content h2, .Main-content h3');
+  const tocContent = document.getElementById('toc-content');
+  
+  if (headings.length > 0) {
+    const tocList = document.createElement('ul');
+    
+    headings.forEach((heading, index) => {
+      // Add ID to the heading if it doesn't have one
+      if (!heading.id) {
+        heading.id = 'toc-heading-' + index;
+      }
+      
+      const listItem = document.createElement('li');
+      const link = document.createElement('a');
+      link.textContent = heading.textContent;
+      link.href = '#' + heading.id;
+      
+      // Indent h3 elements
+      if (heading.tagName === 'H3') {
+        listItem.style.paddingLeft = '15px';
+      }
+      
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById(heading.id).scrollIntoView({behavior: 'smooth'});
+      });
+      
+      listItem.appendChild(link);
+      tocList.appendChild(listItem);
+    });
+    
+    tocContent.appendChild(tocList);
+  } else {
+    tocContent.innerHTML = '<p>No sections found</p>';
+  }
+  
+  // Toggle TOC visibility
+  const tocToggle = document.getElementById('toc-toggle');
+  tocToggle.addEventListener('click', function() {
+    const tocContent = document.getElementById('toc-content');
+    if (tocContent.style.display === 'none' || !tocContent.style.display) {
+      tocContent.style.display = 'block';
+      tocToggle.textContent = 'Contents ▲';
+    } else {
+      tocContent.style.display = 'none';
+      tocToggle.textContent = 'Contents ▼';
+    }
+  });
+});
+</script>
+
+<style>
+#floating-toc {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  z-index: 1000;
+  max-width: 250px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#toc-toggle {
+  width: 100%;
+  padding: 8px;
+  background-color: #fff;
+  border: none;
+  text-align: left;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#toc-content {
+  display: none;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+#toc-content ul {
+  list-style-type: none;
+  padding-left: 5px;
+  margin: 0;
+}
+
+#toc-content li {
+  margin-bottom: 8px;
+}
+
+#toc-content a {
+  text-decoration: none;
+  color: #333;
+}
+
+#toc-content a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  #floating-toc {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 10px;
+    max-width: 200px;
+  }
+}
+</style>
